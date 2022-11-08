@@ -1,30 +1,32 @@
+#Python
+from typing import Optional
+
+#Pydantic -> Modelos
+from pydantic import BaseModel
+
+#FastAPI
 from fastapi import FastAPI 
+from fastapi import Body
 
 # inicializando app como un objeto de FastAPI
 app = FastAPI()
+
+# definiendo el modelo
+
+class Person(BaseModel):
+    first_name: str
+    last_name: str
+    age: str
+    hair_color: Optional[str] = None
+    is_married: Optional[bool] = None 
 
 @app.get("/")
 def home():
     return {"Hello":"World"}
 
-# Para iniciar la app desde uvicorn ejecutar:
-#   uvicorn main:app --reload
-#   uvicorn nombredearchivo:objetoquecontienelaapp --reload
+# REQUEST AND RESPONSE BODY
 
-# Documentacion interactiva de OPENAPI
-# REDOC Y SWAGER
-# se accede desde el navegador en la misma direccion montada
+@app.post("/person/new")
+def create_person(person: Person = Body(...)):
+    return person
 
-# PATH OPERATIONS
-# @app.get("/") # QUE SE ESTA INVOCANDO DESDE EL PATH 127.0.0.1:8080/
-# def home(): # QUE SE EJECUTA
-#     return {"Hello":"World"} # QUE DEVUELVE
-
-# PATH PARAMETERS --> Parametros obligatorios
-# SI ACCEDO A UN PATH COMO /tweets/{tweet_id} --> esto para usar variables e identificar un tweet
-
-# QUERY PARAMETERS --> Parametros opcionales
-# /tweets/{tweet_id}/details?age=20&?height=185 los opcionales van con ?
-
-# REQUEST BODY --> Cuando el cliente(navegador) solicita al servidor
-# RESPONSE BODY --> Cuando el servidor responde al cliente y envia el JSON
