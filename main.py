@@ -1,8 +1,12 @@
 #Python
 from typing import Optional
+from enum import Enum
 
 #Pydantic -> Modelos
 from pydantic import BaseModel
+from pydantic import Field
+from pydantic import EmailStr
+
 
 #FastAPI
 from fastapi import FastAPI 
@@ -12,17 +16,73 @@ from fastapi import Body, Query, Path
 app = FastAPI()
 
 # definiendo el modelo
+class HairColor(Enum): #Definiendo los colores aceptados
+    white = "white"
+    brown = "brown"
+    black = "black"
+    blonce = "blonde"
+    red = "red"
+
 class Location(BaseModel):
-    city: str
-    state: str
-    country: str
+    city: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
+    state: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
+    country: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
 
 class Person(BaseModel):
-    first_name: str
-    last_name: str
-    age: str
-    hair_color: Optional[str] = None
-    is_married: Optional[bool] = None 
+    # con Field validamos los Modelos
+    first_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+        )
+    last_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+        )
+    age: int = Field(
+        ...,
+        gt=0,
+        le=115,
+    )
+    email: EmailStr = Field(
+        ...
+    )
+    hair_color: Optional[HairColor] = Field(default=None)
+    is_married: Optional[bool] = Field(default=None)
+
+    # Tipos de datos
+      # Clasicos
+        # str
+        # int
+        # float
+        # bool
+      
+      # Especiales --> se importan de pydantic
+        # Enum
+        # HttpUrl --> valida que sea un link
+        # FilePath --> Valida la direccion a un archivo
+        # DirectoryPath --> Valida la direccion a una carpeta
+        # EmailStr --> valida que sea un email
+        # PaymentCardNumber 
+        # IPvAnyAdress
+        # NegativeFloat
+        # PositiveFloat
+        # NegativeInt
+        # PositiveInt
+       
 
 @app.get("/")
 def home():
@@ -91,6 +151,5 @@ def update_person(
     location: Location = Body(...)
 ):
     results = person.dict()
-    results.update(location.dict)
-    
+    results.update(location.dict())
     return person
