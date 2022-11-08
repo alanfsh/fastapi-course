@@ -62,12 +62,12 @@ def show_person(
 #       Title
 #       Description
 
-# Validaciones PATH
+# Validaciones PATH PARAMETERS
 @app.get("/person/detail/{person_id}")
 def show_person(
     person_id: int = Path(
         ...,
-        gt=0,
+        gt=0, # GREATER THAN 0
         title = "Person ID",
         description= "This is the person id. It's required",
         )
