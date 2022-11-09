@@ -43,7 +43,7 @@ class Location(BaseModel):
         example="mexico"
     )
 
-class Person(BaseModel):
+class PersonBase(BaseModel):
     # con Field validamos los Modelos
     first_name: str = Field(
         ...,
@@ -69,7 +69,12 @@ class Person(BaseModel):
     )
     hair_color: Optional[HairColor] = Field(default=None, example="white")
     is_married: Optional[bool] = Field(default=None, example="false")
-    password: str = Field(..., min_length=8)
+    
+class Person(PersonBase):
+    password: str = Field(..., min_length=8, example="estaesmipass")
+
+class PersonOut(PersonBase):
+    pass    
     # class Config:
     #     schema_extra = {
     #         "example" : {
@@ -81,33 +86,6 @@ class Person(BaseModel):
     #             "is_married": "True"
     #         }
     #     }
-
-class PersonOut(BaseModel):
-    # con Field validamos los Modelos
-    first_name: str = Field(
-        ...,
-        min_length=1,
-        max_length=50,
-        example="Juan"
-        )
-    last_name: str = Field(
-        ...,
-        min_length=1,
-        max_length=50,
-        example="Perez Montes"
-        )
-    age: int = Field(
-        ...,
-        gt=0,
-        le=115,
-        example=33
-    )
-    email: EmailStr = Field(
-        ...,
-        example="juan_montes@gmail.com"
-    )
-    hair_color: Optional[HairColor] = Field(default=None, example="white")
-    is_married: Optional[bool] = Field(default=None, example="false")
 
     # Tipos de datos
       # Clasicos
