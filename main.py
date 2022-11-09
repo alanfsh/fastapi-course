@@ -10,6 +10,7 @@ from pydantic import EmailStr
 
 #FastAPI
 from fastapi import FastAPI 
+from fastapi import status
 from fastapi import Body, Query, Path
 
 # inicializando app como un objeto de FastAPI
@@ -108,18 +109,26 @@ class PersonOut(PersonBase):
         # PositiveInt
        
 
-@app.get("/")
+@app.get(
+    path="/",
+    status_code=status.HTTP_200_OK
+    )
 def home():
     return {"Hello":"World"}
 
 # REQUEST AND RESPONSE BODY
 
-@app.post("/person/new", response_model=PersonOut) # Se devuelve el MODELO sin contraseña
+@app.post(
+    path="/person/new",
+    response_model=PersonOut, # Se devuelve el MODELO sin contraseña
+    status_code=status.HTTP_201_CREATED) # se devuelve un status code personalizado
 def create_person(person: Person = Body(...)):
     return person
 
 # VALIDACIONES: Query Parameters
-@app.get("/person/detail")
+@app.get(
+    path="/person/detail",
+    )
 def show_person(
     # atributo: Opcional-u-Obligatorio[tipo] = Query(valorDefault, restricciones)
     name: Optional[str] = Query(
@@ -153,7 +162,10 @@ def show_person(
 #       Description
 
 # Validaciones PATH PARAMETERS
-@app.get("/person/detail/{person_id}")
+@app.get(
+    path="/person/detail/{person_id}",
+    status_code=status.HTTP_200_OK
+    )
 def show_person(
     person_id: int = Path(
         ...,
@@ -166,7 +178,10 @@ def show_person(
     return {person_id: "It exists"}
 
 # Validaciones REQUEST BODY
-@app.put("/person/{person_id}")
+@app.put(
+    path="/person/{person_id}",
+    response_model=PersonOut,
+    status_code=status.HTTP_202_ACCEPTED)
 def update_person(
     person_id: int = Path(
         ...,
@@ -181,3 +196,15 @@ def update_person(
     results = person.dict()
     results.update(location.dict())
     return person
+
+# Status Code 
+# 100 Information
+# 200 OK
+#   201 Created
+#   204 Not Content
+# 300 Redirecting
+# 400 Client Error
+#   404 Not found
+#   422 Validation Error
+# 500 Internal Server Error
+# Se agregan como argumento en cada DECORADOR para especificar que respuesta debe dar al ejecutarse
