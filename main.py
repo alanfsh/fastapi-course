@@ -69,7 +69,7 @@ class Person(BaseModel):
     )
     hair_color: Optional[HairColor] = Field(default=None, example="white")
     is_married: Optional[bool] = Field(default=None, example="false")
-
+    password: str = Field(..., min_length=8)
     # class Config:
     #     schema_extra = {
     #         "example" : {
@@ -81,6 +81,33 @@ class Person(BaseModel):
     #             "is_married": "True"
     #         }
     #     }
+
+class PersonOut(BaseModel):
+    # con Field validamos los Modelos
+    first_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        example="Juan"
+        )
+    last_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        example="Perez Montes"
+        )
+    age: int = Field(
+        ...,
+        gt=0,
+        le=115,
+        example=33
+    )
+    email: EmailStr = Field(
+        ...,
+        example="juan_montes@gmail.com"
+    )
+    hair_color: Optional[HairColor] = Field(default=None, example="white")
+    is_married: Optional[bool] = Field(default=None, example="false")
 
     # Tipos de datos
       # Clasicos
@@ -109,7 +136,7 @@ def home():
 
 # REQUEST AND RESPONSE BODY
 
-@app.post("/person/new")
+@app.post("/person/new", response_model=PersonOut) # Se devuelve el MODELO sin contraseña
 def create_person(person: Person = Body(...)):
     return person
 
@@ -168,7 +195,7 @@ def update_person(
         title="Person ID",
         description="This is the person ID",
         gt=0,
-        example=132
+        example=132 #Aqui esta el ejemplo para no rellenar al probar
     ),
     person: Person = Body(...),
     location: Location = Body(...)
