@@ -27,17 +27,20 @@ class Location(BaseModel):
     city: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="monterrey"
     )
     state: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="nuevo leon"
     )
     country: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="mexico"
     )
 
 class Person(BaseModel):
@@ -45,23 +48,39 @@ class Person(BaseModel):
     first_name: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Juan"
         )
     last_name: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Perez Montes"
         )
     age: int = Field(
         ...,
         gt=0,
         le=115,
+        example=33
     )
     email: EmailStr = Field(
-        ...
+        ...,
+        example="juan_montes@gmail.com"
     )
-    hair_color: Optional[HairColor] = Field(default=None)
-    is_married: Optional[bool] = Field(default=None)
+    hair_color: Optional[HairColor] = Field(default=None, example="white")
+    is_married: Optional[bool] = Field(default=None, example="false")
+
+    # class Config:
+    #     schema_extra = {
+    #         "example" : {
+    #             "first_name": "Juan",
+    #             "last_name": "Perez Montes",
+    #             "age": 32,
+    #             "email": "juanpmont@gmail.com",
+    #             "hair_color": "black",
+    #             "is_married": "True"
+    #         }
+    #     }
 
     # Tipos de datos
       # Clasicos
