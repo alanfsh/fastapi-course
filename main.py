@@ -11,7 +11,7 @@ from pydantic import EmailStr
 #FastAPI
 from fastapi import FastAPI 
 from fastapi import status
-from fastapi import Body, Query, Path
+from fastapi import Body, Query, Path, Form
 
 # inicializando app como un objeto de FastAPI
 app = FastAPI()
@@ -76,6 +76,10 @@ class Person(PersonBase):
 
 class PersonOut(PersonBase):
     pass    
+
+class LoginOut(BaseModel):
+    username: str = Field(..., max_length=20, example="juanl97")
+    message: str = Field(default="Login Successfully")
     # class Config:
     #     schema_extra = {
     #         "example" : {
@@ -208,3 +212,11 @@ def update_person(
 #   422 Validation Error
 # 500 Internal Server Error
 # Se agregan como argumento en cada DECORADOR para especificar que respuesta debe dar al ejecutarse
+
+@app.post(
+    path="/login",
+    response_model=LoginOut,
+    status_code=status.HTTP_200_OK
+)
+def login(username: str = Form(...), password: str = Form(...)):
+    return LoginOut(username=username)
