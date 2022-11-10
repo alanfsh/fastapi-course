@@ -116,7 +116,8 @@ class LoginOut(BaseModel):
 
 @app.get(
     path="/",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Actions"]
     )
 def home():
     return {"Hello":"World"}
@@ -126,13 +127,16 @@ def home():
 @app.post(
     path="/person/new",
     response_model=PersonOut, # Se devuelve el MODELO sin contraseña
-    status_code=status.HTTP_201_CREATED) # se devuelve un status code personalizado
+    status_code=status.HTTP_201_CREATED,
+    tags=["Persons"]
+)
 def create_person(person: Person = Body(...)):
     return person
 
 # VALIDACIONES: Query Parameters
 @app.get(
     path="/person/detail",
+    tags=["Persons"]
     )
 def show_person(
     # atributo: Opcional-u-Obligatorio[tipo] = Query(valorDefault, restricciones)
@@ -171,7 +175,8 @@ def show_person(
 persons = [1, 2, 3, 4, 5]
 @app.get(
     path="/person/detail/{person_id}",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Persons"]
     )
 def show_person(
     person_id: int = Path(
@@ -193,7 +198,9 @@ def show_person(
 @app.put(
     path="/person/{person_id}",
     response_model=PersonOut,
-    status_code=status.HTTP_202_ACCEPTED)
+    status_code=status.HTTP_202_ACCEPTED,
+    tags=["Persons"]
+)
 def update_person(
     person_id: int = Path(
         ...,
@@ -224,7 +231,8 @@ def update_person(
 @app.post(
     path="/login",
     response_model=LoginOut,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Persons"]
 )
 def login(username: str = Form(...), password: str = Form(...)):
     return LoginOut(username=username)
@@ -232,7 +240,8 @@ def login(username: str = Form(...), password: str = Form(...)):
 # COOKIES AND HEADERS PARAMETERS
 @app.post(
     path="/contact",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Actions"]
 )
 def contact(
     first_name: str = Form(
@@ -275,6 +284,7 @@ def contact(
 
 @app.post(
     path="/post-image",
+    tags=["Actions"]
 )
 def post_image(
     image: UploadFile = File(...)
