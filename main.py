@@ -117,9 +117,20 @@ class LoginOut(BaseModel):
 @app.get(
     path="/",
     status_code=status.HTTP_200_OK,
-    tags=["Actions"]
+    tags=["Actions"],
+    summary="Homepage"
     )
 def home():
+    '''
+    Home
+
+    This path operation redirect to homepage
+
+    Parameters:
+    - None
+
+    Returns Hello World
+    '''
     return {"Hello":"World"}
 
 # REQUEST AND RESPONSE BODY
@@ -128,15 +139,29 @@ def home():
     path="/person/new",
     response_model=PersonOut, # Se devuelve el MODELO sin contraseña
     status_code=status.HTTP_201_CREATED,
-    tags=["Persons"]
+    tags=["Persons"],
+    summary="Create person in the app"
 )
 def create_person(person: Person = Body(...)):
+    '''
+    Create Person
+
+    This path operation creates a person in the app and save the information in the database
+
+    Parameters:
+    - Request body parameter:
+        - **person: Person** -> A person model with first name, last name, age, hair color, and marital status
+    
+    Returns a person model with first name, last name, age, hair color and marital status
+
+    '''
     return person
 
 # VALIDACIONES: Query Parameters
 @app.get(
     path="/person/detail",
-    tags=["Persons"]
+    tags=["Persons"],
+    summary="Show person"
     )
 def show_person(
     # atributo: Opcional-u-Obligatorio[tipo] = Query(valorDefault, restricciones)
@@ -155,6 +180,18 @@ def show_person(
         example=25
         )
 ):
+    '''
+    Show Person
+
+    This path operation shows a person in the database if the person exists
+
+    Parameters:
+    - Query parameters:
+        - name and age
+    
+    Returns person name and age
+
+    '''
     return {name: age} # Que regresa
 # Mas validaciones:
 #  Numeros:
@@ -176,7 +213,8 @@ persons = [1, 2, 3, 4, 5]
 @app.get(
     path="/person/detail/{person_id}",
     status_code=status.HTTP_200_OK,
-    tags=["Persons"]
+    tags=["Persons"],
+    summary="Show person in app"
     )
 def show_person(
     person_id: int = Path(
@@ -187,6 +225,17 @@ def show_person(
         example=125
         )
 ):
+    '''
+    Show Person
+
+    This path operation check in the database if the person exists
+
+    Parameters:
+    - Path parameters:
+        - person id
+    
+    Returns if the person exists in database
+    '''
     if person_id not in persons:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -199,7 +248,8 @@ def show_person(
     path="/person/{person_id}",
     response_model=PersonOut,
     status_code=status.HTTP_202_ACCEPTED,
-    tags=["Persons"]
+    tags=["Persons"],
+    summary="Update a person in the app"
 )
 def update_person(
     person_id: int = Path(
@@ -212,6 +262,19 @@ def update_person(
     person: Person = Body(...),
     location: Location = Body(...)
 ):
+    '''
+    Update Person
+
+    This path operation update a person in the database
+
+    Parameters:
+    - Path parameters:
+        - person id
+    - Request body:
+        - **person: Person** -> A person model with first name, last name, age, hair color, and marital status
+        - **location: Location** -> A location model with city, state and country
+    Returns person information
+    '''
     results = person.dict()
     results.update(location.dict())
     return person
@@ -232,16 +295,29 @@ def update_person(
     path="/login",
     response_model=LoginOut,
     status_code=status.HTTP_200_OK,
-    tags=["Persons"]
+    tags=["Persons"],
+    summary="Login"
 )
 def login(username: str = Form(...), password: str = Form(...)):
+    '''
+    Login Person
+
+    This path operation login a person in the app
+
+    Parameters:
+    - Request body:
+        - **username: Form** -> person username in form
+        - **password: Form** -> person password in form
+    Returns person username
+    '''
     return LoginOut(username=username)
 
 # COOKIES AND HEADERS PARAMETERS
 @app.post(
     path="/contact",
     status_code=status.HTTP_200_OK,
-    tags=["Actions"]
+    tags=["Actions"],
+    summary="Contact Form"
 )
 def contact(
     first_name: str = Form(
@@ -262,6 +338,21 @@ def contact(
     user_agent: Optional[str] = Header(default=None),
     ads: Optional[str] = Cookie(default=None)
 ):
+    '''
+    Contact Form
+
+    This path operation sends a contact message
+
+    Parameters:
+    - Request body:
+        - **first name: Form** -> person first name in form
+        - **last name: Form** -> person last name in form
+        - **email: Form** -> person email in form
+        - **message: Form** -> person message in form
+        - **user agent: Header** -> user agent in browser
+        - **ads: Cookie** -> cookies in browser
+    Returns user agent in browser  
+    '''
     return user_agent
 
 # TIPOS DE ENTRADAS DE DATOS
@@ -284,11 +375,23 @@ def contact(
 
 @app.post(
     path="/post-image",
-    tags=["Actions"]
+    tags=["Actions"],
+    summary="Post Image in App"
 )
 def post_image(
     image: UploadFile = File(...)
 ):
+    '''
+    Post Image in App
+
+    This path operation post an image in app
+
+    Parameters:
+    - Request body:
+        - **image: File** -> image selected by user
+        
+    Returns filename, format and size of the image selected   
+    '''
     return {
         "Filename":image.filename,
         "Format":image.content_type,
