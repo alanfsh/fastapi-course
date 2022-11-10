@@ -161,7 +161,8 @@ def create_person(person: Person = Body(...)):
 @app.get(
     path="/person/detail",
     tags=["Persons"],
-    summary="Show person"
+    summary="Show person",
+    deprecated=True, # Para deprecar una path operation
     )
 def show_person(
     # atributo: Opcional-u-Obligatorio[tipo] = Query(valorDefault, restricciones)
@@ -389,7 +390,7 @@ def post_image(
     Parameters:
     - Request body:
         - **image: File** -> image selected by user
-        
+
     Returns filename, format and size of the image selected   
     '''
     return {
